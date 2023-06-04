@@ -40,9 +40,3 @@ def run_train(data_path: str):
 
 if __name__ == '__main__':
     run_train()
-
-# Q1: 2.3.2
-# Q2: 154KB
-# Q3: 10
-# Q4: 2.45
-# Q5: 2.285
