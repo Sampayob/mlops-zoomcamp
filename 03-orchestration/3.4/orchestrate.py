@@ -132,4 +132,6 @@ def main_flow(
 
 
 if __name__ == "__main__":
-    main_flow()
+    train_path = str(pathlib.Path(__file__).parent.parent.parent / "data/green_tripdata_2022-01.parquet")
+    val_path = str(pathlib.Path(__file__).parent.parent.parent / "data/green_tripdata_2022-02.parquet")
+    main_flow(train_path, val_path)
