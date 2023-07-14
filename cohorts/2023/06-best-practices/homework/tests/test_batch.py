@@ -1,7 +1,8 @@
 import os
+from unittest.mock import Mock
 from datetime import datetime
 
-import pytest
+import numpy as np
 from pandas import DataFrame
 import pandas as pd
 
@@ -30,8 +31,10 @@ def test_get_output_data():
 
 
 def test_read_data():
+    year = 2022
+    month = 2
     input_path = 'https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2022-02.parquet'
-    expected_data = read_data(input_path)
+    expected_data = read_data(input_path, year, month)
 
     assert isinstance(expected_data, DataFrame), "The expected data is not a Pandas DataFrame."
 
@@ -79,3 +82,27 @@ def test_prepare_data(df_input):
     month = 1
 
     assert expected_data.equals(prepare_data(df_input, categorical, month, year))
+
+
+def test_predict(df_input):
+    """Return model prediction."""
+    categorical_cols = ["PULocationID", "DOLocationID"]
+
+    model = Mock()
+    dv = Mock()
+    
+    predict(df_input, categorical_cols, model, dv)
+
+    dv.transform.assert_called_once()
+    model.predict.assert_called_once()
+
+
+def test_save_data(df_input):
+    """Save output DataFrame."""
+    y_pred = np.ones(len(df_input))
+    df_input['ride_id'] = np.ones(len(df_input))
+    output_path='test_save_data.parquet'
+    save_data(df_input, y_pred, output_path)
+    assert 'test_save_data.parquet' in os.listdir()
+    os.remove(output_path)
+    assert 'test_save_data.parquet' not in os.listdir()
