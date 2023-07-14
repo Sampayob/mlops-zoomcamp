@@ -35,7 +35,7 @@ def get_output_path(year, month):
     return output_pattern.format(year=year, month=month)
 
 
-def read_data(input_path) -> DataFrame:
+def read_data(input_path, year, month) -> DataFrame:
     """Read raw data."""
 
     if os.environ.get('S3_ENDPOINT_URL'):
@@ -66,7 +66,8 @@ def predict(df, categorical_cols, model, dv):
 
     dicts = df[categorical_cols].to_dict(orient="records")
     X_val = dv.transform(dicts)
-    return model.predict(X_val)
+    prediction = model.predict(X_val)
+    return prediction
 
 
 def save_data(df, y_pred, output_path):
@@ -90,7 +91,7 @@ def main(year, month):
         dv, lr = pickle.load(f_in)
 
     logging.info("Read data: yellow_tripdata_%s-%s.parquet", year, month)
-    df = read_data(input_file)
+    df = read_data(input_file, year ,month)
 
     logging.info("Prepare data")
     df = prepare_data(df, categorical, month, year)
